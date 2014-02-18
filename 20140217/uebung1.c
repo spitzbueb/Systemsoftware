@@ -15,6 +15,7 @@ int main()
 	FILE *datei;
 	char *dateiname = "Das Alphabet";
 	int dateiCheck;
+	char *alphabet = {"abcdefghijklmnopqrstuvwxyz"};
 	
 	r = stat(name, &stat_buf);
 	
@@ -55,7 +56,30 @@ int main()
 		
 		if(dateiCheck == 0)
 		{
+			datei = fopen(dateiname,"w");
+			char buchstabe;
 			
+			if(datei != NULL)
+			{
+				
+				int strlength = strlen(alphabet)+1;
+				int zaehler;
+				int fd = fileno(datei);
+				for(zaehler = strlength; zaehler>0;zaehler--)
+				{
+					printf("%i\n",zaehler);
+					lseek(fd,zaehler,0);
+					buchstabe = alphabet[zaehler-1];
+					printf("%c\n",buchstabe);
+					fputc(buchstabe,datei);
+				}
+			}
+			else
+			{
+				
+			}
+			
+			fclose(datei);
 		}
 		
 	}
