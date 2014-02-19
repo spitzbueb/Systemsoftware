@@ -5,6 +5,7 @@
 #include <unistd.h>
 #include <string.h>
 #include <stdlib.h>
+#include <fcntl.h>
 
 int main()
 {
@@ -16,15 +17,15 @@ int main()
 	char *dateiname = "Das Alphabet";
 	int dateiCheck;
 	char *alphabet = {"abcdefghijklmnopqrstuvwxyz"};
-	
+
 	r = stat(name, &stat_buf);
-	
+
 	if(r < 0)
 	{
 		int myerrno = errno;
 		const char *error_string = strerror(myerrno);
 		printf("errno=%d\nmessage=%s\n",myerrno,error_string);
-		
+
 		/* Ordner erstellen */
 		e = mkdir(name,S_IRWXU);
 		if(e == 0)
@@ -33,7 +34,7 @@ int main()
 			r = stat(name, &stat_buf);
 		}
 	}
-	
+
 	if(r == 0)
 	{
 		int changeDirectory = chdir(name);
@@ -43,7 +44,7 @@ int main()
 			int myerrno = errno;
 			const char *error_string = strerror(myerrno);
 			printf("errno=%d\nMessage=%s\n",myerrno,error_string);
-			
+
 			/*Datei erstellen*/
 			datei = fopen(dateiname,"w");
 			if(datei < 0)
@@ -53,36 +54,34 @@ int main()
 			fclose(datei);
 			dateiCheck = stat(dateiname, &stat_buf);
 		}
-		
+
 		if(dateiCheck == 0)
 		{
 			datei = fopen(dateiname,"w");
+			int openFile = open(dateiname, O_WRONLY,0770);
 			char buchstabe;
-			
-			if(datei != NULL)
+
+			if(openFile > 0)
 			{
-				
-				int strlength = strlen(alphabet)+1;
+
+				int strlength = strlen(alphabet);
 				int zaehler;
 				int fd = fileno(datei);
 				for(zaehler = strlength; zaehler>0;zaehler--)
 				{
-					printf("%i\n",zaehler);
-					lseek(fd,zaehler,0);
-					buchstabe = alphabet[zaehler-1];
-					printf("%c\n",buchstabe);
-					fputc(buchstabe,datei);
+					lseek(openFile,zaehler,SEEK_SET);
+					int statusWrite = write(openFile, &alphabet[zaehler-1],sizeof(alphabet[zaehler-1]));
 				}
 			}
 			else
 			{
-				
+
 			}
-			
+
 			fclose(datei);
 		}
-		
+
 	}
-	
+
 	return 0;
 }
