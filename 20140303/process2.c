@@ -38,7 +38,7 @@ int main(int argc, char *argv[]) {
     printf("in grandchild: waiting for pipe\n");
     ret_code = read(pipes[0], buff, strlen(message));
     printf("received message=%s daemonized\n", message);
-    close(pipes[0]);l
+    close(pipes[0]);
     printf("ppid=%d\n", getppid());
     sleep(30);
     printf("done with daemon\n");
