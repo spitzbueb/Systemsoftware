@@ -15,7 +15,7 @@
 #define TRUE 1
 #define ERROR_SIZE 16384
 #define PERM 0600
-#define BUF_SIZE 10
+#define BUF_SIZE 16384
 
 int shmid_for_cleanup = 0;
 
@@ -122,19 +122,9 @@ int main(int argc, char *argv[])
 	
 	char buffer[BUF_SIZE];
 	
-	while(TRUE);
+	while((read(STDIN_FILENO, buffer, BUF_SIZE)) > 0)
 	{
-		read(STDIN_FILENO, buffer, BUF_SIZE);
 		
-		int zaehler = 0;
-				
-		for(zaehler=0;zaehler<BUF_SIZE;zaehler++)
-		{
-			if(buffer[zaehler] == searching)
-			{
-				shm_data->counter = shm_data->counter+1;
-			}
-		}
 	}
 	
 	printf("Anzahl: %l\n", shm_data->counter);
